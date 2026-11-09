@@ -1,0 +1,16 @@
+aws_region = "us-west-1"
+name_prefix = "ztgw-ingress"
+vpc_cidr = "10.10.11.0/24"
+ztgw_endpoint_service_name = "com.amazonaws.vpce.us-west-1.vpce-svc-REPLACE_ME"
+ztgw_location_name = "REPLACE_WITH_EXISTING_ZTGW_LOCATION"
+availability_zones = []
+allowed_client_cidrs = ["198.51.100.10/32"] # Replace with your public client IP.
+web_instance_count = 1
+instance_type = "t3.micro"
+enable_ssm = true
+rule_order = 1
+rule_rank = 7
+# Activation publishes ALL pending tenant changes.
+enable_policy_activation = true
+activation_revision = "1"
+# Export ZSCALER_* credentials in your shell; do not store secrets here.

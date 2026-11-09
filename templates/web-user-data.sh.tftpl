@@ -1,0 +1,36 @@
+#!/bin/bash
+set -euo pipefail
+# Standard Amazon Linux 2023 already includes Python 3. No package download,
+# NAT gateway, ZIA egress or additional internet rule is required to boot.
+command -v python3
+useradd --system --home-dir /opt/ztgw-web --shell /sbin/nologin ztgw-web
+install -d -o root -g root -m 0755 /opt/ztgw-web
+cat > /opt/ztgw-web/index.html <<'HTML'
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>ZTGW ingress lab</title>
+<style>body{font-family:system-ui;max-width:720px;margin:10vh auto;padding:24px;background:#101d35;color:#edf4ff}code{color:#78dcca}</style></head>
+<body><h1>ZTGW ingress lab</h1><p>The private HTTP backend is healthy.</p>
+<p>Lab: <code>${name_prefix}</code></p><p>Availability Zone: <code>${az}</code></p>
+<p>Validate inspection separately in Zscaler traffic logs.</p></body></html>
+HTML
+cat > /etc/systemd/system/ztgw-web.service <<'SERVICE'
+[Unit]
+Description=ZTGW ingress lab HTTP website
+After=network.target
+[Service]
+Type=simple
+User=ztgw-web
+Group=ztgw-web
+ExecStart=/usr/bin/python3 -m http.server 80 --bind 0.0.0.0 --directory /opt/ztgw-web
+Restart=on-failure
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
+SERVICE
+systemctl daemon-reload
+systemctl enable --now ztgw-web.service
