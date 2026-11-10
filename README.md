@@ -1,6 +1,6 @@
 # AWS ingress lab through an existing Zscaler ZTGW
 
-This lab implements the internet-ingress portion of the supplied Layer 4 diagram.
+This lab implements internet ingress through an existing Zscaler ZTGW.
 It creates the AWS consumer VPC and endpoints for an **existing** ZTGW service,
 an HTTP Application Load Balancer, a private EC2 website, and the associated ZTC
 traffic-forwarding rules. Direct Connect, on-premises/DC flows, and the database
